@@ -1,5 +1,5 @@
 # LMSQL
-LMSQL is a simple MySQL class that using PDO. With LMSQL you don't need to write too much code to get results from a table and it's very easy to use on your project. 
+LMSQL is a simple MySQL class that uses PDO. With LMSQL you don't need to write a lot of code to get results from a table and it's very easy to use.
 
 
 ## Documentation
