@@ -148,6 +148,23 @@
             return $this->exec($sql);
             
         }
+
+        /**
+         * Simple search
+         * @param array $queryInfo (
+         *                 'table'=>'Table Name',
+         *                 'searchs'=>['title', 'body'], // or search in all fields - (optional)
+         *                 'word'=>'%YourSearchWord%', // %word% or %word or word%
+         *                 'where'=>['category' => 'news'], // - (optional)
+         *                  );
+         * 
+         * @return array
+         */
+        public function search($queryInfo){
+            $sql = $this->buildQuery('search', $queryInfo);
+            $query = $this->query($sql);
+            return $query->fetchAll();
+        }
          
         /**
          * PDO prepare and execute
@@ -232,7 +249,7 @@
          * @return string
          */
         private function buildQuery($action, $queryInfo){
-            if($action == 'select'){
+            if(in_array($action, ['select', 'search'])){
                 $query = "SELECT ";
                 if(isset($queryInfo['fields'])){
                     $query .= $queryInfo['fields'];
@@ -260,6 +277,9 @@
                     $query .= " WHERE ".$queryInfo['where'];
                 }
             }
+            if(isset($queryInfo['word'])){
+                $query .= $this->buildSearchQuery($queryInfo);
+            }
             if(isset($queryInfo['order'])){
                 $query .= " ORDER BY ".$queryInfo['order'];
             }
@@ -272,6 +292,13 @@
             $this->sqlQuery = $query;
             return $query;
         }
+
+        /**
+         * Build WHERE query (key-value)
+         * @param array
+         * 
+         * @return string
+         */
         private function buildWhereQuery($where){
             $query = "";
             if($where){
@@ -282,6 +309,33 @@
                 }
             }
             return $query;
+        }
+
+        /**
+         * Build search query
+         * @param array
+         * 
+         * @return string
+         */
+        private function buildSearchQuery($queryInfo){
+            if(isset($queryInfo['where'])){
+                $sql = " AND ";
+            }else{
+                $sql = " WHERE ";
+            }
+            if(!isset($queryInfo['searchs'])){
+                $tableFields = $this->schema(['table'=>$queryInfo['table']]);
+                foreach($tableFields as $field){
+                    $queryInfo['searchs'][] = $field['Field'];
+                }
+            }
+            $comma = "";
+            $keyword = $queryInfo['word'];
+            foreach($queryInfo['searchs'] as $column){
+                $sql .= "$comma `$column` LIKE '$keyword'";
+                $comma=" OR ";
+            }
+            return $sql;
         }
 
         /**
