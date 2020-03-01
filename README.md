@@ -4,13 +4,13 @@ LMSQL is a simple MySQL class that uses PDO. With LMSQL you don't need to write 
 
 ## Documentation
 
-### Installation
+## Installation
 ```php
 require_once('mysql.class.php');
 ```
 
-### Commands
-#### Connect
+## Commands
+### Connect
 ```php
 $mysql = new LMSQL('localhost', 'root', '123456', 'databaseName', true);
 ```
@@ -22,8 +22,9 @@ $mysql->connect();
 ```
 default charset is utf8.
 
-#### select
+### select
 Get data from table with where clause, limit, order and custom index
+
 @return array
 
 - Simple usage
@@ -33,12 +34,21 @@ $data = $mysql->select(['table'=>'news']);
 
 - With fields, where clause, order and limit.
 ```php
-$data = $mysql->select(['table'=>'tableName', 'fields'=>'id, title, body', 'where'=>['category'=>'news'], 'order'=>'id DESC', 'limit'=>10]);
+$data = $mysql->select([
+                        'table'=>'tableName', 
+                        'fields'=>'id, title, body', 
+                        'where'=>['category'=>'news'], 
+                        'order'=>'id DESC', 
+                        'limit'=>10
+                        ]);
 ```
 
 - With custom array index
 ```php
-$data = $mysql->select(['table'=>'tableName', 'index'=>['column'=>'type', 'multi'=>true]]);
+$data = $mysql->select([
+                      'table'=>'tableName', 
+                      'index'=>['column'=>'type', 'multi'=>true]
+                      ]);
 ```
 
 - With custom SQL
@@ -46,37 +56,39 @@ $data = $mysql->select(['table'=>'tableName', 'index'=>['column'=>'type', 'multi
 $data = $mysql->select(["sql"=>"SELECT news_title FROM news, category WHERE news_category = category_id and category_type = 'active'"]);
 ```
 
-#### load
+### load
 Get one row from table
+
 @return array
 
 ```php
 $data = $mysql->load('tableName', ['table'=>'news', 'where'=>'id = 1']);
 ```
 
-#### insert
+### insert
 Insert data to table
 
 ```php
 $mysql->insert(['table'=>'users', 'values'=>['fullname'=>'Arash', 'company'=>'Leomoon']]);
 ```
 
-#### update
+### update
 Update rows
 
 ```php
 $mysql->update(['table'=>'users', 'where'=>['id'=>2218], 'values'=>['name'=>'Amin']]);
 ```
 
-#### delete
+### delete
 Delete rows
 
 ```php
 $mysql->delete(['table'=>'tableName', 'where'=>['id', '817']]);
 ```
 
-#### total
+### total
 Get total rows
+
 @return int
 
 ```php
@@ -87,14 +99,14 @@ or
 $mysql->count(['table'=>'tableName', 'where'=>['status'=>'active', 'category'=>'something']]);
 ```
 
-#### insertId
+### insertId
 Get the last inserted id
 
 ```php
 $mysql->insertId();
 ```
 
-#### schema
+### schema
 Show tables of current DB:
 
 ```php
@@ -105,7 +117,7 @@ Show columns:
 $mysql->schema(['table'=>'YourTableName']);
 ```
 
-#### exec
+### exec
 Execute your custom sql query
 
 ```php
