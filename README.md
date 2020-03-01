@@ -105,6 +105,22 @@ Get the last inserted id
 ```php
 $mysql->insertId();
 ```
+### search
+Search in all fields
+```php
+$mysql->search([
+        'table'=>'news',
+        'word'=>'%fake%'
+    ]);
+```
+Search in specific fields
+```php
+$mysql->search([
+        'table'=>'news',
+        'word'=>'%fake%',
+        'searchs'=>['title']
+    ]);
+```
 
 ### schema
 Show tables of current DB:
@@ -123,4 +139,3 @@ Execute your custom sql query
 ```php
 $mysql->exec($sql);
 ```
-
