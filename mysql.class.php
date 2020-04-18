@@ -153,9 +153,12 @@
          * Simple search
          * @param array $queryInfo (
          *                 'table'=>'Table Name',
+         *                 'fields'=>'id, title', // - (optional)
          *                 'searchs'=>['title', 'body'], // or search in all fields - (optional)
          *                 'word'=>'%YourSearchWord%', // %word% or %word or word%
          *                 'where'=>['category' => 'news'], // - (optional)
+         *                 'limit'=> 10 // - (optional)
+         *                 'order'=>'publish_date DESC'
          *                  );
          * 
          * @return array
@@ -265,7 +268,7 @@
                 $query = "DELETE FROM ".$queryInfo['table'];
             }
             if($action == 'insert'){
-                $query = "INSERT INTO ".$queryInfo['table']." SET ".$this->buildWhereQuery($queryInfo['values']);
+                $query = "INSERT INTO ".$queryInfo['table']." (`".implode('`, `', array_keys($queryInfo['values']))."`) VALUES ('".implode("', '", array_values($queryInfo['values']))."')";
             }
             if($action == 'count'){
                 $query = "SELECT COUNT(1) FROM ".$queryInfo['table'];
@@ -310,7 +313,7 @@
             }
             return $query;
         }
-
+        
         /**
          * Build search query
          * @param array
