@@ -62,7 +62,7 @@ Get one row from table
 @return array
 
 ```php
-$data = $mysql->load('tableName', ['table'=>'news', 'where'=>'id = 1']);
+$data = $mysql->load(['table'=>'news', 'where'=>'id = 1']);
 ```
 
 ### insert
