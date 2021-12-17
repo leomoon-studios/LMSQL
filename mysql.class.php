@@ -4,9 +4,9 @@
      * 
      * @package LMSQL
      * @author Arash Soleimani <arash@leomoon.com>
-     * @link http://arashsoleimani.com
+     * @link https://github.com/leomoon-studios/LMSQL
      * @license https://opensource.org/licenses/MIT - The MIT License
-     * @version 1.0
+     * @version 1.2
      * 
      */
     class LMSQL {
@@ -176,7 +176,6 @@
         public function query($sql){
             $stmt = $this->mypdo->prepare($sql);
             $stmt->execute();
-
             if(!$stmt){
                 $error = $this->mypdo->errorInfo();
                 if(!is_null($error[2])){
@@ -262,13 +261,21 @@
                 $query .= " FROM ".$queryInfo['table'];
             }
             if($action == 'update'){
-                $query = "UPDATE ".$queryInfo['table']." SET ".$this->buildWhereQuery($queryInfo['values']);
+                $query = "UPDATE ".$queryInfo['table']." SET ".$this->buildUpdateQuery($queryInfo['values']);
             }
             if($action == 'delete'){
                 $query = "DELETE FROM ".$queryInfo['table'];
             }
             if($action == 'insert'){
-                $query = "INSERT INTO ".$queryInfo['table']." (`".implode('`, `', array_keys($queryInfo['values']))."`) VALUES ('".implode("', '", array_values($queryInfo['values']))."')";
+                $query = "INSERT INTO ".$queryInfo['table'];
+                $values = [];
+                foreach($queryInfo['values'] as $key=>$value){
+                    if($value != NULL){
+                        $values[$key] = $value;
+                    }
+                }
+                $query .= " (`".implode('`,`', array_keys($values))."`) VALUES ('".implode("','", array_values($values))."')";
+
             }
             if($action == 'count'){
                 $query = "SELECT COUNT(1) FROM ".$queryInfo['table'];
@@ -313,7 +320,29 @@
             }
             return $query;
         }
-        
+
+        /**
+         * Build Update query (key-value)
+         * @param array
+         * 
+         * @return string
+         */
+        private function buildUpdateQuery($values){
+            $query = "";
+            if($values){
+                $comma = "";
+                foreach ($values as $key=>$value) {
+                    if($value != NULL){
+                        $query.="$comma `$key`='$value' ";
+                    }else{
+                        $query .= "$comma `$key`=NULL ";
+                    }
+                    $comma=', ';
+                }
+            }
+            return $query;
+        }
+
         /**
          * Build search query
          * @param array
@@ -340,7 +369,7 @@
             }
             return $sql;
         }
-
+       
         /**
          * Show errors
          */
